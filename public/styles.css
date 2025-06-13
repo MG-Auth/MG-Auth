@@ -1,50 +1,204 @@
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
-  color: #333
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
+  min-height: 100vh;
 }
 
 .navbar {
   text-align: left;
   font-weight: bold;
-  background-color: #fff;
-  padding: 7px 20px;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 15px 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.navbar h1 {
+  margin: 0;
+  color: #4a5568;
+  font-size: 1.8rem;
 }
 
 .content {
-  text-align: center;
-  margin-top: 50px;
-  min-height: 60vh;
-}
-.content .card {
-  background-color: #fff;
-  padding: 10px;
-  min-width: 300px;
-  margin: 30px;
-  min-height:300px;
-  padding-top: 30%;
-  border-radius: 20px;
-}
-input {
-  margin: 10px 20px;
-  padding: 10px;
-  width: 80%;
-  box-sizing: border-box;
-  border: 1px solid #4da3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  padding: 20px;
 }
 
-input[type=submit] {
-  margin: 10px 30px;
-  padding: 10px;
-  width: 50%;
+.content .card {
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  max-width: 400px;
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.card h2 {
+  color: #2d3748;
+  margin-bottom: 10px;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.card p {
+  color: #718096;
+  margin-bottom: 30px;
+  font-size: 1rem;
+}
+
+.card h3 {
+  color: #2d3748;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.card h4 {
+  color: #4a5568;
+  font-weight: normal;
+  margin-top: 10px;
+}
+
+input[type="email"] {
+  margin: 15px 0;
+  padding: 15px 20px;
+  width: 100%;
   box-sizing: border-box;
-  border: 2px solid #4da3ff;
-  margin-top: 20px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background-color: #f7fafc;
+}
+
+input[type="email"]:focus {
+  outline: none;
+  border-color: #4da3ff;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(77, 163, 255, 0.1);
+}
+
+input[type="submit"] {
+  margin: 20px 0 10px 0;
+  padding: 15px 30px;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4da3ff 0%, #3182ce 100%);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+input[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(77, 163, 255, 0.3);
+  background: linear-gradient(135deg, #3182ce 0%, #2c5aa0 100%);
+}
+
+input[type="submit"]:active {
+  transform: translateY(0);
 }
 
 footer {
   text-align: center;
-  color: #666;
-  padding: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  font-size: 0.9rem;
+}
+
+/* Brand form styles */
+.brand-form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #2d3748;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #4da3ff;
+}
+
+.generate-btn {
+  background: linear-gradient(135deg, #4da3ff 0%, #3182ce 100%);
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.generate-btn:hover {
+  background: linear-gradient(135deg, #3182ce 0%, #2c5aa0 100%);
+  transform: translateY(-1px);
+}
+
+.result {
+  margin-top: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+  border-radius: 10px;
+  display: none;
+  border: 1px solid #81e6d9;
+}
+
+.result a {
+  color: #0d9488;
+  word-break: break-all;
+  font-weight: 500;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .content .card {
+    margin: 20px;
+    padding: 30px 25px;
+  }
+  
+  .navbar {
+    padding: 12px 20px;
+  }
+  
+  .navbar h1 {
+    font-size: 1.5rem;
+  }
 }
