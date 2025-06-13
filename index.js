@@ -1,10 +1,14 @@
 const express = require('express');
 const nodemailer = require("nodemailer");
 const path = require('path');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const app = express();
 const PORT = 5000;
+
+// In-memory token storage (use database in production)
+const tokenStore = new Map();
 
 const transporter = nodemailer.createTransport({
 service: "gmail",
@@ -27,20 +31,106 @@ res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.post('/mail', (req,res)=>{
+// Generate unique token
+const token = crypto.randomBytes(32).toString('hex');
+const expiresAt = Date.now() + (10 * 60 * 1000); // 10 minutes from now
+
+// Store token with email and expiration
+tokenStore.set(token, {
+email: req.body.email,
+expiresAt: expiresAt,
+createdAt: Date.now()
+});
+
+const verifyLink = `${req.protocol}://${req.get('host')}/verify?token=${token}`;
+
 const mailOptions = {
 from: "MG Auth",
 to: req.body.email,
 subject: "Magic link to Sign you Up",
-html: "your link is https://magarevedant.vercel.app/"
+html: `<p>Click the link below to verify your email:</p><a href="${verifyLink}">Verify Email</a><p>This link expires in 10 minutes.</p>`
 }
+
 transporter.sendMail(mailOptions, (error, info) => {
 if (error) {
 res.send(error);
 } else {
-res.send("Email sent: " + info.response)
+res.json({ 
+message: "Email sent successfully", 
+token: token,
+expiresIn: "10 minutes"
+});
 }
 })
 })
+
+// Token verification endpoint
+app.get('/verify', (req, res) => {
+const { token } = req.query;
+
+if (!token) {
+return res.status(400).json({ error: 'Token is required' });
+}
+
+const tokenData = tokenStore.get(token);
+
+if (!tokenData) {
+return res.status(404).json({ error: 'Invalid token' });
+}
+
+// Check if token has expired
+if (Date.now() > tokenData.expiresAt) {
+tokenStore.delete(token); // Clean up expired token
+return res.status(401).json({ error: 'Token has expired' });
+}
+
+// Token is valid
+res.json({
+message: 'Token verified successfully',
+email: tokenData.email,
+issuedAt: new Date(tokenData.createdAt).toISOString(),
+expiresAt: new Date(tokenData.expiresAt).toISOString()
+});
+
+// Optionally remove token after verification (one-time use)
+// tokenStore.delete(token);
+});
+
+// Endpoint to check token validity without consuming it
+app.post('/verify', (req, res) => {
+const { token } = req.body;
+
+if (!token) {
+return res.status(400).json({ error: 'Token is required' });
+}
+
+const tokenData = tokenStore.get(token);
+
+if (!tokenData) {
+return res.status(404).json({ error: 'Invalid token' });
+}
+
+if (Date.now() > tokenData.expiresAt) {
+tokenStore.delete(token);
+return res.status(401).json({ error: 'Token has expired' });
+}
+
+res.json({
+valid: true,
+email: tokenData.email,
+expiresAt: new Date(tokenData.expiresAt).toISOString()
+});
+});
+
+// Clean up expired tokens periodically
+setInterval(() => {
+const now = Date.now();
+for (const [token, data] of tokenStore.entries()) {
+if (now > data.expiresAt) {
+tokenStore.delete(token);
+}
+}
+}, 5 * 60 * 1000); // Clean up every 5 minutes
 
 // Start the server
 app.listen(PORT, '0.0.0.0', () => {
