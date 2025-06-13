@@ -28,7 +28,7 @@ res.sendFile(path.join(__dirname, 'public', 'index.html'));
 
 app.get('/mail/:email', (req,res)=>{
 const mailOptions = {
-from: process.env.EMAIL,
+from: "MG Auth",
 to: req.params.email,
 subject: "Magic link to Sign you Up",
 html: "your link is https://magarevedant.vercel.app/"
