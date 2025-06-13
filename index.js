@@ -26,10 +26,10 @@ app.get('/', (req, res) => {
 res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/mail/:email', (req,res)=>{
+app.post('/mail', (req,res)=>{
 const mailOptions = {
 from: "MG Auth",
-to: req.params.email,
+to: req.body.email,
 subject: "Magic link to Sign you Up",
 html: "your link is https://magarevedant.vercel.app/"
 }
