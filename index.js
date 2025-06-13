@@ -39,7 +39,8 @@ const expiresAt = Date.now() + (10 * 60 * 1000); // 10 minutes from now
 tokenStore.set(token, {
 email: req.body.email,
 expiresAt: expiresAt,
-createdAt: Date.now()
+createdAt: Date.now(),
+redirect_url: req.body.redirect_url
 });
 
 const verifyLink = `${req.protocol}://${req.get('host')}/verify?token=${token}`;
@@ -84,41 +85,12 @@ tokenStore.delete(token); // Clean up expired token
 return res.status(401).json({ error: 'Token has expired' });
 }
 
-// Token is valid - Set cookies accessible to third-party websites
-res.cookie('auth_token', token, {
-maxAge: 24 * 60 * 60 * 1000, // 24 hours
-httpOnly: false, // Allow JavaScript access
-secure: false, // Set to true in production with HTTPS
-sameSite: 'None', // Allow third-party access
-domain: undefined // Allow subdomain access
-});
+// Token is valid - redirect to the specified URL
 
-res.cookie('user_email', tokenData.email, {
-maxAge: 24 * 60 * 60 * 1000, // 24 hours
-httpOnly: false, // Allow JavaScript access
-secure: false, // Set to true in production with HTTPS
-sameSite: 'None', // Allow third-party access
-domain: undefined // Allow subdomain access
-});
+res.redirect(tokenData.redirect_url);
 
-res.cookie('verified', 'true', {
-maxAge: 24 * 60 * 60 * 1000, // 24 hours
-httpOnly: false, // Allow JavaScript access
-secure: false, // Set to true in production with HTTPS
-sameSite: 'None', // Allow third-party access
-domain: undefined // Allow subdomain access
-});
-
-res.json({
-message: 'Token verified successfully',
-email: tokenData.email,
-issuedAt: new Date(tokenData.createdAt).toISOString(),
-expiresAt: new Date(tokenData.expiresAt).toISOString(),
-cookiesSet: true
-});
-
-// Optionally remove token after verification (one-time use)
-// tokenStore.delete(token);
+// remove token after verification (one-time use)
+tokenStore.delete(token);
 });
 
 // Endpoint to check token validity without consuming it
@@ -139,12 +111,12 @@ if (Date.now() > tokenData.expiresAt) {
 tokenStore.delete(token);
 return res.status(401).json({ error: 'Token has expired' });
 }
+// verified - redirect to the specified URL
 
-res.json({
-valid: true,
-email: tokenData.email,
-expiresAt: new Date(tokenData.expiresAt).toISOString()
-});
+  res.redirect(tokenData.redirect_url);
+
+  // remove token after verification (one-time use)
+  tokenStore.delete(token);
 });
 
 // Clean up expired tokens periodically
