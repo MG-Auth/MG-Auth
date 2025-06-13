@@ -3,6 +3,7 @@ const email = document.querySelector("input[type=email]");
 
 const card = document.querySelector(".card");
 
+const url = document.querySelector(".hide").innerHTML;
 
 request_btn.addEventListener("click", (e)=>{
   e.preventDefault();
@@ -13,7 +14,8 @@ request_btn.addEventListener("click", (e)=>{
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      email: email.value
+      email: email.value,
+      url: url,
     })
   })
   .then(res => res.text())

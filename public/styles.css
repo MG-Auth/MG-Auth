@@ -3,6 +3,7 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
   background-image: url("bg.svg");
+  background-size: cover;
   color: #333;
 }
 
@@ -23,16 +24,26 @@ body {
   padding: 10px;
   min-width: 300px;
   margin: 30px;
-  min-height:300px;
-  padding-top: 30%;
+  min-height:50%;
+  padding-top: 10%;
   border-radius: 20px;
 }
+
+.logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 20px auto;
+  display: block;
+}
+
 input {
   margin: 10px 20px;
   padding: 10px;
   width: 80%;
   box-sizing: border-box;
   border: 1px solid #4da3ff;
+  border-radius: 5px;
 }
 
 input[type=submit] {
@@ -45,7 +56,14 @@ input[type=submit] {
 }
 
 footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
   text-align: center;
   color: #666;
   padding: 10px;
+}
+
+.hide {
+  display: none
 }

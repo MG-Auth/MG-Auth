@@ -1,6 +1,7 @@
 const express = require('express');
 const nodemailer = require("nodemailer");
 const path = require('path');
+const fs = require('fs');
 const crypto = require('crypto');
 require('dotenv').config();
 
@@ -26,20 +27,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Send index.html on root URL
-app.get('/', (req, res) => {
-res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 app.get('/page/:page', (req, res) => {
   try {
     const page = decodeURIComponent(req.params.page);
-    const data = JSON.parse(page);  // <-- fixed typo here
-    const page_code = fs.readFileSync("./login_page.html", "utf-8");
+    const data = JSON.parse(page); 
+    const page_code = fs.readFileSync("public/login_page.html", "utf-8");
 
-    // Fixed typo in "brand_logo"
-    const branded_page = page_code
-      .replace("{{brand_name}}", data.brand_name)
-      .replace("{{brand_logo}}", data.brand_logo);
+    let branded_page;
+
+    if (data.brand_logo && data.brand_name && data.url) {
+      branded_page = page_code
+        .replace("{{brand_name}}", data.brand_name)
+        .replace("{{brand_logo}}", data.brand_logo)
+        .replace("{{url}}", data.url);
+    } else {
+      branded_page = page_code;
+    }
 
     res.send(branded_page);
   } catch (err) {
@@ -56,7 +59,8 @@ const expiresAt = Date.now() + (10 * 60 * 1000); // 10 minutes from now
 tokenStore.set(token, {
 email: req.body.email,
 expiresAt: expiresAt,
-createdAt: Date.now()
+createdAt: Date.now(),
+  url: req.body.url
 });
 
 const verifyLink = `${req.protocol}://${req.get('host')}/verify?token=${token}`;
@@ -101,41 +105,11 @@ tokenStore.delete(token); // Clean up expired token
 return res.status(401).json({ error: 'Token has expired' });
 }
 
-// Token is valid - Set cookies accessible to third-party websites
-res.cookie('auth_token', token, {
-maxAge: 24 * 60 * 60 * 1000, // 24 hours
-httpOnly: false, // Allow JavaScript access
-secure: false, // Set to true in production with HTTPS
-sameSite: 'None', // Allow third-party access
-domain: undefined // Allow subdomain access
-});
-
-res.cookie('user_email', tokenData.email, {
-maxAge: 24 * 60 * 60 * 1000, // 24 hours
-httpOnly: false, // Allow JavaScript access
-secure: false, // Set to true in production with HTTPS
-sameSite: 'None', // Allow third-party access
-domain: undefined // Allow subdomain access
-});
-
-res.cookie('verified', 'true', {
-maxAge: 24 * 60 * 60 * 1000, // 24 hours
-httpOnly: false, // Allow JavaScript access
-secure: false, // Set to true in production with HTTPS
-sameSite: 'None', // Allow third-party access
-domain: undefined // Allow subdomain access
-});
-
-res.json({
-message: 'Token verified successfully',
-email: tokenData.email,
-issuedAt: new Date(tokenData.createdAt).toISOString(),
-expiresAt: new Date(tokenData.expiresAt).toISOString(),
-cookiesSet: true
-});
-
-// Optionally remove token after verification (one-time use)
-// tokenStore.delete(token);
+// Token is valid
+res.redirect(tokenData.url);
+  
+// remove token after verification (one-time use)
+ tokenStore.delete(token);
 });
 
 // Endpoint to check token validity without consuming it
