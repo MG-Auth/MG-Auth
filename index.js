@@ -30,6 +30,23 @@ app.get('/', (req, res) => {
 res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.get('/page/:page', (req, res) => {
+  try {
+    const page = decodeURIComponent(req.params.page);
+    const data = JSON.parse(page);  // <-- fixed typo here
+    const page_code = fs.readFileSync("./login_page.html", "utf-8");
+
+    // Fixed typo in "brand_logo"
+    const branded_page = page_code
+      .replace("{{brand_name}}", data.brand_name)
+      .replace("{{brand_logo}}", data.brand_logo);
+
+    res.send(branded_page);
+  } catch (err) {
+    res.status(400).send("Invalid request: " + err.message);
+  }
+});
+
 app.post('/mail', (req,res)=>{
 // Generate unique token
 const token = crypto.randomBytes(32).toString('hex');
