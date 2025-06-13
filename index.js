@@ -2,6 +2,7 @@ const express = require('express');
 const nodemailer = require("nodemailer");
 const path = require('path');
 const crypto = require('crypto');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
@@ -25,9 +26,53 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Send index.html on root URL
+// Send brand configuration page on root URL
 app.get('/', (req, res) => {
-res.sendFile(path.join(__dirname, 'public', 'index.html'));
+res.sendFile(path.join(__dirname, 'public', 'brand-config.html'));
+});
+
+// Handle branded login pages
+app.get('/login', (req, res) => {
+const { brand } = req.query;
+let brandData = null;
+
+if (brand) {
+    try {
+        // Decode the brand data from URL
+        const decodedData = Buffer.from(brand, 'base64').toString('utf-8');
+        brandData = JSON.parse(decodedData);
+    } catch (error) {
+        console.error('Error decoding brand data:', error);
+    }
+}
+
+// Read the base HTML file
+const fs = require('fs');
+let htmlContent = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf-8');
+
+if (brandData) {
+    // Replace placeholders with brand data
+    htmlContent = htmlContent.replace(
+        '<h1>MG Auth</h1>',
+        `<h1>${brandData.company || 'MG Auth'}</h1>`
+    );
+    
+    // Add logo if provided
+    if (brandData.logo) {
+        htmlContent = htmlContent.replace(
+            '<h1>',
+            `<img src="${brandData.logo}" alt="${brandData.company} Logo" style="height: 40px; margin-right: 10px; vertical-align: middle;"><h1 style="display: inline; vertical-align: middle;">`
+        );
+    }
+    
+    // Add brand data to the page for script.js to use
+    htmlContent = htmlContent.replace(
+        '<script src="script.js"></script>',
+        `<script>window.brandData = ${JSON.stringify(brandData)};</script><script src="script.js"></script>`
+    );
+}
+
+res.send(htmlContent);
 });
 
 app.post('/mail', (req,res)=>{
@@ -35,21 +80,27 @@ app.post('/mail', (req,res)=>{
 const token = crypto.randomBytes(32).toString('hex');
 const expiresAt = Date.now() + (10 * 60 * 1000); // 10 minutes from now
 
+// Get redirect URL from brand data or default
+const redirectUrl = req.body.redirect_url || (req.body.brandData ? req.body.brandData.redirect : null);
+
 // Store token with email and expiration
 tokenStore.set(token, {
 email: req.body.email,
 expiresAt: expiresAt,
 createdAt: Date.now(),
-redirect_url: req.body.redirect_url
+redirect_url: redirectUrl
 });
 
 const verifyLink = `${req.protocol}://${req.get('host')}/verify?token=${token}`;
 
+// Use company name from brand data if available
+const companyName = req.body.brandData ? req.body.brandData.company : "MG Auth";
+
 const mailOptions = {
-from: "MG Auth",
+from: companyName,
 to: req.body.email,
-subject: "Magic link to Sign you Up",
-html: `<p>Click the link below to verify your email:</p><a href="${verifyLink}">Verify Email</a><p>This link expires in 10 minutes.</p>`
+subject: `Magic link to Sign you Up - ${companyName}`,
+html: `<p>Click the link below to verify your email for ${companyName}:</p><a href="${verifyLink}">Verify Email</a><p>This link expires in 10 minutes.</p>`
 }
 
 transporter.sendMail(mailOptions, (error, info) => {
