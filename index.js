@@ -84,12 +84,37 @@ tokenStore.delete(token); // Clean up expired token
 return res.status(401).json({ error: 'Token has expired' });
 }
 
-// Token is valid
+// Token is valid - Set cookies accessible to third-party websites
+res.cookie('auth_token', token, {
+maxAge: 24 * 60 * 60 * 1000, // 24 hours
+httpOnly: false, // Allow JavaScript access
+secure: false, // Set to true in production with HTTPS
+sameSite: 'None', // Allow third-party access
+domain: undefined // Allow subdomain access
+});
+
+res.cookie('user_email', tokenData.email, {
+maxAge: 24 * 60 * 60 * 1000, // 24 hours
+httpOnly: false, // Allow JavaScript access
+secure: false, // Set to true in production with HTTPS
+sameSite: 'None', // Allow third-party access
+domain: undefined // Allow subdomain access
+});
+
+res.cookie('verified', 'true', {
+maxAge: 24 * 60 * 60 * 1000, // 24 hours
+httpOnly: false, // Allow JavaScript access
+secure: false, // Set to true in production with HTTPS
+sameSite: 'None', // Allow third-party access
+domain: undefined // Allow subdomain access
+});
+
 res.json({
 message: 'Token verified successfully',
 email: tokenData.email,
 issuedAt: new Date(tokenData.createdAt).toISOString(),
-expiresAt: new Date(tokenData.expiresAt).toISOString()
+expiresAt: new Date(tokenData.expiresAt).toISOString(),
+cookiesSet: true
 });
 
 // Optionally remove token after verification (one-time use)
