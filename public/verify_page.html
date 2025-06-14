@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+
 <script>
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
@@ -13,11 +15,10 @@
         alert("Token expired. Please login again.");
       } else {
         // Safe to use
-        document.getElementById('username').innerText = payload.name;
-        document.getElementById('email').innerText = payload.email;
-      }
+        const content = JSON.stringify(payload);
+       alert(content);
 
-    } catch (err) {
+    }} catch (err) {
       console.error("Invalid token format:", err);
       alert("Invalid or malformed token." + err);
     }
