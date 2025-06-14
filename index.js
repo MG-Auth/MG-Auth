@@ -55,14 +55,14 @@ app.get('/verify_token', (req, res) => {
   if (!token) return res.status(400).json({ valid: false, error: "Token missing" });
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     res.json({
       valid: true,
       email: decoded.email,
       exp: decoded.exp
     });
   } catch (err) {
-    res.status(401).json({ valid: false, error: err.message});
+    res.status(401).json({ valid: false, token: token, error: err.message});
   }
 });
 
