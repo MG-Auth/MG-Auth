@@ -48,7 +48,23 @@ app.get('/token_verify', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'verify_page.html'));
 })
 
+// GET /verify?token=...
+app.get('/verify_token', (req, res) => {
+  const token = req.query.token;
 
+  if (!token) return res.status(400).json({ valid: false, error: "Token missing" });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    res.json({
+      valid: true,
+      email: decoded.email,
+      exp: decoded.exp
+    });
+  } catch (err) {
+    res.status(401).json({ valid: false, error: "Invalid or expired token" });
+  }
+});
 
 // Send index.html on root URL
 app.get('/page/:page', (req, res) => {
