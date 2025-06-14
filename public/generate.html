@@ -3,44 +3,112 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MG Auth Link Generator</title>
+  <title>MG Auth – Generate Link</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: sans-serif;
-      background: #f9fafb;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f0f4ff, #ffffff);
+      color: #111827;
+      overflow-x: hidden;
+      min-height: 100vh;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
       padding: 2rem;
-      color: #333;
+      position: relative;
+    }
+
+    .background-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .background-shapes div {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.2;
+      animation: float 10s ease-in-out infinite;
+    }
+
+    .circle1 {
+      width: 200px;
+      height: 200px;
+      background: #3b82f6;
+      top: 10%;
+      left: -10%;
+    }
+
+    .circle2 {
+      width: 150px;
+      height: 150px;
+      background: #9333ea;
+      bottom: 20%;
+      right: -5%;
+    }
+
+    .circle3 {
+      width: 100px;
+      height: 100px;
+      background: #f59e0b;
+      top: 50%;
+      right: 15%;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-30px); }
+    }
+
+    main {
+      z-index: 1;
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+      max-width: 500px;
+      width: 100%;
+      animation: fadeInUp 1s ease-out;
     }
 
     h1 {
-      margin-bottom: 1rem;
+      text-align: center;
       color: #1d4ed8;
-    }
-
-    form {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 1rem;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-      max-width: 500px;
-      width: 100%;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
     }
 
     label {
       display: block;
       margin-bottom: 0.25rem;
       font-weight: 600;
+      color: #374151;
     }
 
     input {
       width: 100%;
-      padding: 0.5rem;
+      padding: 0.6rem 0.75rem;
       margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #2563eb;
+      outline: none;
     }
 
     button {
@@ -48,10 +116,11 @@
       background: #2563eb;
       color: white;
       border: none;
-      border-radius: 0.5rem;
+      border-radius: 0.75rem;
       cursor: pointer;
       width: 100%;
       font-weight: bold;
+      transition: background 0.3s ease;
     }
 
     button:hover {
@@ -59,33 +128,76 @@
     }
 
     .output {
-      margin-top: 1rem;
-      word-break: break-all;
-      background: #eef;
+      margin-top: 1.5rem;
+      background: #eff6ff;
       padding: 1rem;
+      border-radius: 0.75rem;
+      font-size: 0.95rem;
+      color: #1e3a8a;
+      word-break: break-word;
+      position: relative;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.75rem;
       border-radius: 0.5rem;
+      cursor: pointer;
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      main {
+        padding: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>MG Auth Link Generator</h1>
-  <form id="linkForm">
-    <label for="brand_name">Brand Name</label>
-    <input type="text" id="brand_name" required />
 
-    <label for="brand_logo">Brand Logo URL</label>
-    <input type="url" id="brand_logo" required />
-
-    <label for="redirect_url">Redirect URL (after auth)</label>
-    <input type="url" id="redirect_url" required />
-
-    <button type="submit">Generate Auth Link</button>
-  </form>
-
-  <div class="output" id="output" style="display: none;">
-    <strong>Copy your branded auth link:</strong>
-    <p id="authLink"></p>
+  <div class="background-shapes">
+    <div class="circle1"></div>
+    <div class="circle2"></div>
+    <div class="circle3"></div>
   </div>
+
+  <main>
+    <h1>Generate Your MG Auth Link</h1>
+    <form id="linkForm">
+      <label for="brand_name">Brand Name</label>
+      <input type="text" id="brand_name" placeholder="e.g. Bivon" required />
+
+      <label for="brand_logo">Brand Logo URL</label>
+      <input type="url" id="brand_logo" placeholder="e.g. https://example.com/logo.png" required />
+
+      <label for="redirect_url">Redirect URL</label>
+      <input type="url" id="redirect_url" placeholder="e.g. https://yourapp.com/auth/callback" required />
+
+      <button type="submit">Generate Link</button>
+    </form>
+
+    <div class="output" id="output" style="display: none;">
+      <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+      <strong>Auth Link:</strong>
+      <p id="authLink"></p>
+    </div>
+  </main>
 
   <script>
     const form = document.getElementById('linkForm');
@@ -99,18 +211,21 @@
       const brand_logo = document.getElementById('brand_logo').value.trim();
       const url = document.getElementById('redirect_url').value.trim();
 
-      const payload = {
-        brand_name,
-        brand_logo,
-        url
-      };
-
+      const payload = { brand_name, brand_logo, url };
       const encoded = encodeURIComponent(JSON.stringify(payload));
       const finalLink = `${window.location.origin}/page/${encoded}`;
 
       authLink.textContent = finalLink;
       output.style.display = 'block';
     });
+
+    function copyToClipboard() {
+      const text = authLink.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Copied to clipboard!");
+      });
+    }
   </script>
+
 </body>
 </html>
