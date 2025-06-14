@@ -62,7 +62,7 @@ app.get('/verify_token', (req, res) => {
       exp: decoded.exp
     });
   } catch (err) {
-    res.status(401).json({ valid: false, error: "Invalid or expired token" });
+    res.status(401).json({ valid: false, error: err });
   }
 });
 
