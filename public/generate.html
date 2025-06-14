@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MG Auth Link Generator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      color: #333;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+      color: #1d4ed8;
+    }
+
+    form {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+    }
+
+    button {
+      padding: 0.75rem 1rem;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #1e40af;
+    }
+
+    .output {
+      margin-top: 1rem;
+      word-break: break-all;
+      background: #eef;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>MG Auth Link Generator</h1>
+  <form id="linkForm">
+    <label for="brand_name">Brand Name</label>
+    <input type="text" id="brand_name" required />
+
+    <label for="brand_logo">Brand Logo URL</label>
+    <input type="url" id="brand_logo" required />
+
+    <label for="redirect_url">Redirect URL (after auth)</label>
+    <input type="url" id="redirect_url" required />
+
+    <button type="submit">Generate Auth Link</button>
+  </form>
+
+  <div class="output" id="output" style="display: none;">
+    <strong>Copy your branded auth link:</strong>
+    <p id="authLink"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('linkForm');
+    const output = document.getElementById('output');
+    const authLink = document.getElementById('authLink');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const brand_name = document.getElementById('brand_name').value.trim();
+      const brand_logo = document.getElementById('brand_logo').value.trim();
+      const url = document.getElementById('redirect_url').value.trim();
+
+      const payload = {
+        brand_name,
+        brand_logo,
+        url
+      };
+
+      const encoded = encodeURIComponent(JSON.stringify(payload));
+      const finalLink = `${window.location.origin}/page/${encoded}`;
+
+      authLink.textContent = finalLink;
+      output.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
