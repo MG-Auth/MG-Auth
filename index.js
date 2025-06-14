@@ -23,12 +23,32 @@ pass: process.env.PASSWORD,
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Token generate 
+const jwt = require("jsonwebtoken");
+
+function JWT(user_email) {
+  return jwt.sign(
+    {
+      email: user_email,
+      iss: "mg-auth"
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+}
+
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/generate', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'generate.html'));
 })
+
+app.get('/token_verify', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'verify_page.html'));
+})
+
+
 
 // Send index.html on root URL
 app.get('/page/:page', (req, res) => {
@@ -102,16 +122,18 @@ return res.status(400).json({ error: 'Token is required' });
 const tokenData = tokenStore.get(token);
 
 if (!tokenData) {
-return res.status(404).json({ error: 'Invalid token' });
+return res.sendFile(path.join(__dirname, 'public', 'invalid.html'));
 }
 
 // Check if token has expired
 if (Date.now() > tokenData.expiresAt) {
 tokenStore.delete(token); // Clean up expired token
-return res.status(401).json({ error: 'Token has expired' });
+  return res.sendFile(path.join(__dirname, 'public', 'invalid.html'));
 }
 
 // Token is valid
+  const jwtToken = JWT(tokenData.email);
+  tokenData.url = tokenData.url + "?token=" + jwtToken;
 res.redirect(tokenData.url);
   
 // remove token after verification (one-time use)

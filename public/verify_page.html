@@ -1,0 +1,27 @@
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+
+  if (token) {
+    try {
+      const payload = jwt_decode(token); // No verification, just decoding
+      console.log("User Info:", payload);
+
+      // Optional: Check expiry
+      const now = Math.floor(Date.now() / 1000);
+      if (payload.exp < now) {
+        alert("Token expired. Please login again.");
+      } else {
+        // Safe to use
+        document.getElementById('username').innerText = payload.name;
+        document.getElementById('email').innerText = payload.email;
+      }
+
+    } catch (err) {
+      console.error("Invalid token format:", err);
+      alert("Invalid or malformed token.");
+    }
+  } else {
+    alert("Missing token in URL");
+  }
+</script>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Invalid Link – MG Auth</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f0f4ff, #ffffff);
+      color: #111827;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #dc2626;
+      margin-bottom: 1rem;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #374151;
+      margin-bottom: 2rem;
+      animation: fadeInUp 1.3s ease-out;
+    }
+
+    a.button {
+      display: inline-block;
+      background: #3b82f6;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+      transition: background 0.3s ease;
+      animation: fadeInUp 1.5s ease-out;
+    }
+
+    a.button:hover {
+      background: #1d4ed8;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 1rem;
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    .background-shapes div {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.2;
+      animation: float 10s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    .circle1 {
+      width: 200px;
+      height: 200px;
+      background: #3b82f6;
+      top: 10%;
+      left: -10%;
+    }
+
+    .circle2 {
+      width: 150px;
+      height: 150px;
+      background: #9333ea;
+      bottom: 20%;
+      right: -5%;
+    }
+
+    .circle3 {
+      width: 100px;
+      height: 100px;
+      background: #f59e0b;
+      top: 50%;
+      right: 15%;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-30px); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="background-shapes">
+    <div class="circle1"></div>
+    <div class="circle2"></div>
+    <div class="circle3"></div>
+  </div>
+
+  <h1>Invalid or Expired Link</h1>
+  <p>It looks like the authentication link you used is no longer valid.<br>Please try again or generate a new one.</p>
+  
+
+  <footer>
+    &copy; 2025 MG Auth · Built with ❤️ by Magarevedant 
+  </footer>
+
+</body>
+</html>
