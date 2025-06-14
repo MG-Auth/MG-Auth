@@ -68,12 +68,14 @@ createdAt: Date.now(),
 });
 
 const verifyLink = `${req.protocol}://${req.get('host')}/verify?token=${token}`;
-
+const email_body_code = fs.readFileSync("email.html","utf-8");
+  const email_body = email_body_code.replace("{{link}}", verifyLink).replace("{{link}}", verifyLink).replace("{{link}}", verifyLink);
+  
 const mailOptions = {
 from: "MG Auth",
 to: req.body.email,
 subject: "Magic link to Sign you Up",
-html: `<p>Click the link below to verify your email:</p><a href="${verifyLink}">Verify Email</a><p>This link expires in 10 minutes.</p>`
+html: email_body
 }
 
 transporter.sendMail(mailOptions, (error, info) => {
