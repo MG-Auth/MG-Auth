@@ -1,197 +1,217 @@
 <!DOCTYPE html><html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authentication</title>
-    <link rel="stylesheet" href="/styles.css">
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }body {
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #f0f4ff, #ffffff);
-    color: #111827;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 2rem 1rem;
-    position: relative;
-    overflow: hidden;
-  }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Authentication</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  .hide {
-    display: none;
-  }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f0f4ff, #ffffff);
+      color: #111827;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
 
-  .navbar {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 2rem;
-    z-index: 2;
-  }
+    .background-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-  .navbar h1 {
-    font-size: 2rem;
-    color: #1d4ed8;
-    animation: fadeInDown 1s ease-out;
-  }
+    .background-shapes div {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.1;
+      animation: float 10s ease-in-out infinite;
+    }
 
-  .content {
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    width: 100%;
-  }
+    .circle1 {
+      width: 200px;
+      height: 200px;
+      background: #3b82f6;
+      top: 5%;
+      left: -5%;
+    }
 
-  .card {
-    background: white;
-    padding: 2rem;
-    border-radius: 1.5rem;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.05);
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-    animation: fadeInUp 1s ease-out;
-  }
+    .circle2 {
+      width: 150px;
+      height: 150px;
+      background: #9333ea;
+      bottom: 10%;
+      right: -5%;
+    }
 
-  .card img.logo {
-    width: 60px;
-    margin-bottom: 1rem;
-  }
+    .circle3 {
+      width: 120px;
+      height: 120px;
+      background: #f59e0b;
+      top: 40%;
+      right: 10%;
+    }
 
-  .card p {
-    color: #475569;
-    font-size: 1rem;
-  }
+    .navbar {
+      width: 100%;
+      padding: 1.5rem 2rem 0.5rem;
+      z-index: 2;
+      text-align: left;
+    }
 
-  .card h2 {
-    font-size: 1.5rem;
-    color: #1d4ed8;
-    margin: 0.5rem 0 1.5rem;
-  }
+    .navbar h1 {
+      font-size: 2rem;
+      color: #1d4ed8;
+      animation: fadeInDown 0.8s ease-out;
+    }
 
-  form input[type="email"] {
-    width: 80%;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.75rem;
-    font-size: 1rem;
-  }
+    .content {
+      flex: 1;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2rem 1rem;
+    }
 
-  form input[type="submit"] {
-    width: 50%;
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 0.75rem;
-    border-radius: 0.75rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
+    .auth-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      width: 100%;
+      max-width: 900px;
+      align-items: center;
+    }
 
-  form input[type="submit"]:hover {
-    background: #1e40af;
-  }
+    @media(min-width: 768px) {
+      .auth-container {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
 
-  footer {
-    text-align: center;
-    padding: 1rem 0;
-    font-size: 0.9rem;
-    color: #6b7280;
-    z-index: 2;
-  }
+    .brand-block {
+      text-align: center;
+    }
 
-  .background-shapes {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    overflow: hidden;
-  }
+    .brand-block img.logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+    }
 
-  .background-shapes div {
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0.2;
-    animation: float 10s ease-in-out infinite;
-  }
+    .brand-block p {
+      color: #475569;
+      font-size: 1rem;
+    }
 
-  .circle1 {
-    width: 200px;
-    height: 200px;
-    background: #3b82f6;
-    top: 10%;
-    left: -10%;
-  }
+    .brand-block h2 {
+      font-size: 1.8rem;
+      color: #1d4ed8;
+      margin-top: 0.5rem;
+    }
 
-  .circle2 {
-    width: 150px;
-    height: 150px;
-    background: #9333ea;
-    bottom: 20%;
-    right: -5%;
-  }
+    .form-block {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+      width: 100%;
+      max-width: 400px;
+    }
 
-  .circle3 {
-    width: 100px;
-    height: 100px;
-    background: #f59e0b;
-    top: 50%;
-    right: 15%;
-  }
+    form input[type="email"] {
+      width: 80%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+    }
 
-  @keyframes fadeInDown {
-    0% { opacity: 0; transform: translateY(-20px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
+    form input[type="submit"] {
+      width: 50%;
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
 
-  @keyframes fadeInUp {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
+    form input[type="submit"]:hover {
+      background: #1e40af;
+    }
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-30px); }
-  }
-</style>
+    footer {
+      text-align: center;
+      padding: 1rem 0;
+      font-size: 0.9rem;
+      color: #6b7280;
+      z-index: 2;
+    }
 
-  </head>
-  <body>
-    <div class="background-shapes">
-      <div class="circle1"></div>
-      <div class="circle2"></div>
-      <div class="circle3"></div>
-    </div><p class="hide">{{url}}</p>
-<div class="navbar">
-  <h1>MG Auth</h1>
-</div>
-<div class="content">
-  <div class="card">
-    <img src="{{brand_logo}}" class="logo">
-    <p>Getting started with </p>
-    <h2>{{brand_name}}</h2>
-    <form>
-      <input type="email" placeholder="Enter Your Email" required>
-      <input type="submit">
-    </form>
+    .hide {
+      display: none;
+    }
+
+    @keyframes fadeInDown {
+      0% { opacity: 0; transform: translateY(-15px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-shapes">
+    <div class="circle1"></div>
+    <div class="circle2"></div>
+    <div class="circle3"></div>
   </div>
-</div>
-<footer>
-  Made with ❤️ by Magarevedant
-</footer>
-<script src="/script.js"></script>
 
-  </body>
+  <p class="hide">{{url}}</p>
+
+  <div class="navbar">
+    <h1>MG Auth</h1>
+  </div>
+
+  <div class="content">
+    <div class="auth-container">
+      <div class="brand-block">
+        <img src="{{brand_logo}}" class="logo" />
+        <p>Getting started with</p>
+        <h2>{{brand_name}}</h2>
+      </div>
+
+      <div class="form-block">
+        <form>
+          <input type="email" placeholder="Enter Your Email" required />
+          <input type="submit" />
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer>Made with ❤️ by Magarevedant</footer>
+  <script src="/script.js"></script>
+</body>
 </html>
