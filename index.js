@@ -62,7 +62,7 @@ app.get('/verify_token', (req, res) => {
       exp: decoded.exp
     });
   } catch (err) {
-    res.status(401).json({ valid: false, error: err });
+    res.status(401).json({ valid: false, error: err.message});
   }
 });
 
@@ -149,6 +149,7 @@ tokenStore.delete(token); // Clean up expired token
 
 // Token is valid
   const jwtToken = JWT(tokenData.email);
+  console.log(jwtToken);
   tokenData.url = tokenData.url + "?token=" + jwtToken;
 res.redirect(tokenData.url);
   
