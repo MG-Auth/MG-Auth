@@ -1,7 +1,7 @@
 const request_btn = document.querySelector("input[type=submit]");
 const email = document.querySelector("input[type=email]");
 
-const card = document.querySelector(".card");
+const card = document.querySelector(".form-block");
 
 const url = document.querySelector(".hide").innerHTML;
 
